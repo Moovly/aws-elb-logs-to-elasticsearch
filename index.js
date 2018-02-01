@@ -113,10 +113,32 @@ function postDocumentToES(doc, context) {
     });
 }
 
+function deleteOldIndex() {
+    var req = new AWS.HttpRequest(endpoint);
+
+    req.method = 'DELETE';
+    var d = new Date();
+    d.setDate(d.getDate() - 1)
+    var indexTimestamp = d.toISOString().replace(/\-/g, '.').replace(/T.+/, '');
+    req.path = 'alb-logs-' + indexTimestamp;
+    req.region = esDomain.region;
+    req.headers['presigned-expires'] = false;
+    req.headers['Host'] = endpoint.host;
+
+    // Sign the request (Sigv4)
+    var signer = new AWS.Signers.V4(req, 'es');
+    signer.addAuthorization(creds, new Date());
+
+    // Post document to ES
+    var send = new AWS.NodeHttpClient();
+    send.handleRequest(req, null);
+}
+
 /* Lambda "main": Execution starts here */
 exports.handler = function(event, context) {
     console.log('Received event: ', JSON.stringify(event, null, 2));
 
+    deleteOldIndex();
     /* == Streams ==
     * To avoid loading an entire (typically large) log file into memory,
     * this is implemented as a pipeline of filters, streaming log data
