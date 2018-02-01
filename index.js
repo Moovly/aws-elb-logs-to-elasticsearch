@@ -20,14 +20,15 @@ var AWS = require('aws-sdk');
 var LineStream = require('byline').LineStream;
 var parse = require('elb-log-parser');  // elb-log-parser  https://github.com/toshihirock/node-elb-log-parser
 var path = require('path');
-var stream = require('stream');
+var stream = require('stream')
+var zlib = require('zlib');
 var indexTimestamp = new Date().toISOString().replace(/\-/g, '.').replace(/T.+/, '');
 
 /* Globals */
 var esDomain = {
-    endpoint: 'elastic-search-domain-fs12fdwrdq2ahilw4zbrcocmmy.eu-west-1.es.amazonaws.com',
+    endpoint: 'search-logging-mcpojqi52owpwkk45pfbcsba2y.eu-west-1.es.amazonaws.com',
     region: 'eu-west-1',
-    index: 'elblogs-' + indexTimestamp, // adds a timestamp to index. Example: elblogs-2016.03.31
+    index: 'alb-logs-' + indexTimestamp, // adds a timestamp to index. Example: elblogs-2016.03.31
     doctype: 'elb-access-logs'
 };
 var endpoint =  new AWS.Endpoint(esDomain.endpoint);
@@ -56,6 +57,7 @@ function s3LogsToES(bucket, key, context, lineStream, recordStream) {
 
     // Flow: S3 file stream -> Log Line stream -> Log Record stream -> ES
     s3Stream
+      .pipe(zlib.createGunzip())
       .pipe(lineStream)
       .pipe(recordStream)
       .on('data', function(parsedEntry) {
@@ -114,7 +116,7 @@ function postDocumentToES(doc, context) {
 /* Lambda "main": Execution starts here */
 exports.handler = function(event, context) {
     console.log('Received event: ', JSON.stringify(event, null, 2));
-    
+
     /* == Streams ==
     * To avoid loading an entire (typically large) log file into memory,
     * this is implemented as a pipeline of filters, streaming log data
