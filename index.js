@@ -113,14 +113,14 @@ function postDocumentToES(doc, context) {
     });
 }
 
-function deleteOldIndex() {
+function deleteOldIndex(prefix) {
     var req = new AWS.HttpRequest(endpoint);
 
     req.method = 'DELETE';
     var d = new Date();
-    d.setDate(d.getDate() - 1)
+    d.setDate(d.getDate() - 3)
     var indexTimestamp = d.toISOString().replace(/\-/g, '.').replace(/T.+/, '');
-    req.path = 'alb-logs-' + indexTimestamp;
+    req.path = '/' + prefix + indexTimestamp;
     req.region = esDomain.region;
     req.headers['presigned-expires'] = false;
     req.headers['Host'] = endpoint.host;
@@ -131,14 +131,25 @@ function deleteOldIndex() {
 
     // Post document to ES
     var send = new AWS.NodeHttpClient();
-    send.handleRequest(req, null);
+    send.handleRequest(req, null, function(httpResp) {
+        var body = '';
+        httpResp.on('data', function (chunk) {
+            body += chunk;
+        });
+        httpResp.on('end', function (chunk) {
+            console.log('Attempted deleting old ' + req.path + ' logs: ' + JSON.stringify(body));
+        });
+    }, function(err) {
+        console.log('Error on deleting old logs: ' + req.path + err);
+    });
 }
 
 /* Lambda "main": Execution starts here */
 exports.handler = function(event, context) {
     console.log('Received event: ', JSON.stringify(event, null, 2));
 
-    deleteOldIndex();
+    deleteOldIndex('alb-logs-')
+    deleteOldIndex('kong-logs-');
     /* == Streams ==
     * To avoid loading an entire (typically large) log file into memory,
     * this is implemented as a pipeline of filters, streaming log data
