@@ -18,7 +18,7 @@
 /* Imports */
 var AWS = require('aws-sdk');
 var LineStream = require('byline').LineStream;
-var parse = require('elb-log-parser');  // elb-log-parser  https://github.com/toshihirock/node-elb-log-parser
+var parse = require('alb-log-parser'); 
 var path = require('path');
 var stream = require('stream')
 var zlib = require('zlib');
