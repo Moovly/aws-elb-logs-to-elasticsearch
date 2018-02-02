@@ -61,8 +61,10 @@ function s3LogsToES(bucket, key, context, lineStream, recordStream) {
       .pipe(lineStream)
       .pipe(recordStream)
       .on('data', function(parsedEntry) {
-            postDocumentToES(parsedEntry, context);
-      });
+        postDocumentToES(parsedEntry, context);
+      }).on('error', (err) => {
+        console.log('Stream error', err);
+      });;
 
     s3Stream.on('error', function() {
         console.log(
