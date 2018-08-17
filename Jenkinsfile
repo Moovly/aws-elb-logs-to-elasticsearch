@@ -17,7 +17,7 @@ pipeline {
      stage('Build') {
        steps {
          sh 'docker run --rm -v ${WORKSPACE}:/var/task lambci/lambda:build-nodejs8.10 npm install --production'
-         sh 'docker run -v ${WORKSPACE}:/app -w /app kramos/alpine-zip -r $BUILD_ZIP_NAME src node_modules .env'
+         sh 'docker run -v ${WORKSPACE}:/app -w /app kramos/alpine-zip -r $BUILD_ZIP_NAME index.js node_modules'
        }
      }
 
