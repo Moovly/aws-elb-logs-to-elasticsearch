@@ -127,6 +127,7 @@ function deleteOldIndex(prefix) {
     req.region = esDomain.region;
     req.headers['presigned-expires'] = false;
     req.headers['Host'] = endpoint.host;
+    req.headers['Content-Type'] = 'application/json';
 
     // Sign the request (Sigv4)
     var signer = new AWS.Signers.V4(req, 'es');
