@@ -18,7 +18,7 @@
 /* Imports */
 var AWS = require('aws-sdk');
 var LineStream = require('byline').LineStream;
-var parse = require('alb-log-parser'); 
+var parse = require('alb-log-parser');
 var path = require('path');
 var stream = require('stream')
 var zlib = require('zlib');
@@ -152,8 +152,8 @@ function deleteOldIndex(prefix) {
 exports.handler = function(event, context) {
     console.log('Received event: ', JSON.stringify(event, null, 2));
 
-    deleteOldIndex('alb-logs-')
-    deleteOldIndex('kong-logs-');
+    //deleteOldIndex('alb-logs-')
+    //deleteOldIndex('kong-logs-');
     /* == Streams ==
     * To avoid loading an entire (typically large) log file into memory,
     * this is implemented as a pipeline of filters, streaming log data
