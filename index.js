@@ -85,12 +85,12 @@ function postDocumentToES(doc, context) {
     req.method = 'POST';
     req.path = path.join('/', esDomain.index, esDomain.doctype);
     req.region = esDomain.region;
-    //req.body = doc;
-    req.body = zlib.gzipSync(doc);
+    req.body = doc;
+    //req.body = zlib.gzipSync(doc);
     req.headers['presigned-expires'] = false;
     req.headers['Host'] = endpoint.host;
     req.headers['Content-Type'] = 'application/json';
-    req.headers['Content-Encoding'] = 'gzip';
+    //req.headers['Content-Encoding'] = 'gzip';
 
     // Sign the request (Sigv4)
     var signer = new AWS.Signers.V4(req, 'es');
