@@ -86,7 +86,7 @@ function postDocumentToES(doc, context) {
     req.path = path.join('/', esDomain.index, esDomain.doctype);
     req.region = esDomain.region;
     //req.body = doc;
-    const buf = Buffer.from(JSON.stringify(doc));
+    const buf = Buffer.from(doc);
     req.body = zlib.gzipSync(buf).toString();
     req.headers['presigned-expires'] = false;
     req.headers['Host'] = endpoint.host;
