@@ -26,7 +26,7 @@ var indexTimestamp = new Date().toISOString().replace(/\-/g, '.').replace(/T.+/,
 
 /* Globals */
 var esDomain = {
-    endpoint: 'search-logging-mcpojqi52owpwkk45pfbcsba2y.eu-west-1.es.amazonaws.com',
+    endpoint: 'es.tools.moovly.com',
     region: 'eu-west-1',
     index: 'alb-logs-' + indexTimestamp, // adds a timestamp to index. Example: elblogs-2016.03.31
     doctype: 'elb-access-logs'
