@@ -18,6 +18,10 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-1
+        role-to-assume: ${{ secrets.AWS_ROLE_GENERAL_TO_ASSUME }}
+        role-external-id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
+        role-duration-seconds: 3600
+        role-session-name: CI
     - name: Update Lambda
       run: |
         aws lambda update-function-code --function-name $PROJECT --zip-file fileb://build-$GITHUB_SHA.zip --publish
