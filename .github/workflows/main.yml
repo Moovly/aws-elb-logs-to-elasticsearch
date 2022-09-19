@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: docker run --rm -v $GITHUB_WORKSPACE:/var/task lambci/lambda:build-nodejs10.x npm install --only=production
+    - run: docker run --rm -v $GITHUB_WORKSPACE:/var/task lambci/lambda:build-nodejs16.x npm install --only=production
     - run: zip -r build-$GITHUB_SHA.zip index.js node_modules
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
