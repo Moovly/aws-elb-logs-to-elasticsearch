@@ -29,7 +29,7 @@ var esDomain = {
     endpoint: 'es.tools.moovly.com',
     region: 'eu-west-1',
     index: 'alb-logs-' + indexTimestamp, // adds a timestamp to index. Example: elblogs-2016.03.31
-    doctype: 'elb-access-logs'
+    doctype: '_doc'
 };
 var endpoint =  new AWS.Endpoint(esDomain.endpoint);
 var s3 = new AWS.S3();
