@@ -30,7 +30,32 @@ jobs:
         role-to-assume: ${{ secrets.AWS_ROLE_CLOUDFORMATION_TO_ASSUME }}
         role-duration-seconds: 3600
         role-session-name: CI
-        
-    - name: Update Lambda
+
+    - name: Deploy or Create Lambda Function
+      env:
+        FUNCTION_NAME: ${{ env.PROJECT }}
+        ZIP_FILE: build-${{ github.sha }}.zip
+        HANDLER: index.js
+        RUNTIME: nodejs18.x
+        ROLE_ARN: arn:aws:iam::939614502044:role/lambda-basic-execution
       run: |
-        aws lambda update-function-code --function-name $PROJECT --zip-file fileb://build-$GITHUB_SHA.zip --publish
+        set -e
+
+        echo "Deploying Lambda function: $FUNCTION_NAME"
+
+        if aws lambda get-function --function-name "$FUNCTION_NAME" > /dev/null 2>&1; then
+          echo "Function exists. Updating code..."
+          aws lambda update-function-code \
+            --function-name "$FUNCTION_NAME" \
+            --zip-file fileb://$ZIP_FILE \
+            --publish
+        else
+          echo "Function does not exist. Creating new function..."
+          aws lambda create-function \
+            --function-name "$FUNCTION_NAME" \
+            --runtime "$RUNTIME" \
+            --handler "$HANDLER" \
+            --zip-file fileb://$ZIP_FILE \
+            --publish \
+            --role "$ROLE_ARN"
+        fi
