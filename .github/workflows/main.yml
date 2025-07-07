@@ -51,11 +51,13 @@ jobs:
             --publish
         else
           echo "Function does not exist. Creating new function..."
-          aws lambda create-function \
+          LAMBDA_VERSION=$(aws lambda create-function \
             --function-name "$FUNCTION_NAME" \
             --runtime "$RUNTIME" \
             --handler "$HANDLER" \
             --zip-file fileb://$ZIP_FILE \
             --publish \
+            --query 'Version' \
+            --output text) \
             --role "$ROLE_ARN"
         fi
