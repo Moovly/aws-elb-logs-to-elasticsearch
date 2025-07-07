@@ -13,12 +13,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v3
       with:
         node-version: '16.x'
+
     - run: npm install --only=production
+
     - run: zip -r build-$GITHUB_SHA.zip index.js node_modules
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@master
       with:
@@ -26,6 +30,7 @@ jobs:
         role-to-assume: ${{ secrets.AWS_ROLE_CLOUDFORMATION_TO_ASSUME }}
         role-duration-seconds: 3600
         role-session-name: CI
+        
     - name: Update Lambda
       run: |
         aws lambda update-function-code --function-name $PROJECT --zip-file fileb://build-$GITHUB_SHA.zip --publish
