@@ -37,7 +37,7 @@ jobs:
         ZIP_FILE: build-${{ github.sha }}.zip
         HANDLER: index.js
         RUNTIME: nodejs18.x
-        ROLE_ARN: arn:aws:iam::939614502044:role/lambda-basic-execution
+        ROLE_ARN: arn:aws:iam::939614502044:role/lambda_exec_role
       run: |
         set -e
 
