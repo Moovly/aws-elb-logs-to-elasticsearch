@@ -56,6 +56,5 @@ jobs:
             --runtime "$RUNTIME" \
             --handler "$HANDLER" \
             --zip-file fileb://$ZIP_FILE \
-            --publish \
-            --role "$ROLE_ARN"
+            --publish 
         fi
